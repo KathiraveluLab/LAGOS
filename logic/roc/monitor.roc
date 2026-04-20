@@ -12,3 +12,10 @@ isLatencyAcceptable : List F64, F64 -> Bool
 isLatencyAcceptable = \latencies, threshold ->
     avgLatency = List.sum latencies / (Num.toF64 (List.len latencies))
     avgLatency < threshold
+
+## Calculates the 99th percentile tail latency
+calculate99thPercentile : List F64 -> F64
+calculate99thPercentile = \latencies ->
+    sorted = List.sortAsc latencies
+    index = Num.floor (Num.toF64 (List.len latencies) * 0.99)
+    List.get sorted index |> Result.withDefault 0.0

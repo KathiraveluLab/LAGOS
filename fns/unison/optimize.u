@@ -16,3 +16,9 @@ optimizeScaling infos =
         case List.head sorted of
             Some best -> Some (best.nodeId)
             None -> None
+
+isLastMile : [Text] -> Boolean
+isLastMile peers =
+    -- Content-addressed logic to determine if a node serves as a last-mile optimize
+    -- Based on the density of peers in the Autonomous System
+    (List.size peers) > 10

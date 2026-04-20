@@ -31,3 +31,12 @@ pub fn handle_federation_event(msg: FederationMessage) {
     LeaveDomain(id) -> io.println("Domain left: " <> id)
   }
 }
+
+pub fn handle_flood_event(request_count: Int, threshold: Int) {
+  if request_count > threshold {
+    io.println("ALERT: DDoS Flood detected!")
+    True
+  } else {
+    False
+  }
+}

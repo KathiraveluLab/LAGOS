@@ -15,12 +15,29 @@ module lagos::governance {
         node_count: u64,
     }
 
+    struct TransactionLedger has key {
+        id: UID,
+        transactions: u64,
+    }
+
     fun init(ctx: &mut TxContext) {
         let registry = Registry {
             id: object::new(ctx),
             node_count: 0,
         };
+        let ledger = TransactionLedger {
+            id: object::new(ctx),
+            transactions: 0,
+        };
         transfer::share_object(registry);
+        transfer::share_object(ledger);
+    }
+
+    public entry fun log_transaction(
+        ledger: &mut TransactionLedger,
+        _ctx: &mut TxContext
+    ) {
+        ledger.transactions = ledger.transactions + 1;
     }
 
     public entry fun register_node(

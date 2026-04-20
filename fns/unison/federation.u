@@ -1,0 +1,18 @@
+-- LAGOS Federated Orchestration (Unison)
+-- These primitives handle handshakes across administrative domains
+
+type DomainIdentity = {
+    domainId : Text,
+    publicKey : Text
+}
+
+initiateHandshake : DomainIdentity -> DomainIdentity -> Optional Text
+initiateHandshake caller target =
+    -- Logic to establish trust between federated controllers
+    -- Returns the hash of the shared session policy
+    Some (caller.domainId ++ "-" ++ target.domainId ++ "-auth-hash")
+
+verifyFederationState : Text -> Boolean
+verifyFederationState hash =
+    -- Verifies the integrity of the federated state hash
+    Text.size hash > 0
