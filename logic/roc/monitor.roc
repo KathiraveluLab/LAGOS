@@ -14,8 +14,7 @@ isLatencyAcceptable = \latencies, threshold ->
     avgLatency < threshold
 
 ## Calculates the 99th percentile tail latency
-calculate99thPercentile : List F64 -> F64
-calculate99thPercentile = \latencies ->
-    sorted = List.sortAsc latencies
-    index = Num.floor (Num.toF64 (List.len latencies) * 0.99)
-    List.get sorted index |> Result.withDefault 0.0
+## Exported to C for Pony FFI integration
+calculate99thPercentileC : List F64 -> F64
+calculate99thPercentileC = \latencies ->
+    calculate99thPercentile latencies

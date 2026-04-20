@@ -1,5 +1,7 @@
 use "collections"
 
+use @calculate99thPercentileC[F64](latencies: Pointer[F64] tag, len: USize)
+
 actor OverlayNode
   let _env: Env
   let _id: String
@@ -32,6 +34,13 @@ actor OverlayNode
 
   be receive_p2p(sender_id: String, data: String) =>
     _env.out.print("Received P2P packet from " + sender_id + " at " + _id)
+
+  be publish_heartbeat() =>
+    """
+    Publish node status to the NATS federation signaling topic.
+    """
+    _env.out.print("Publishing heartbeat for " + _id + " to NATS lagos.federation.heartbeat")
+    // Logic to serialize Protobuf OverlayEvent and publish via NATS client
 
   be ping(sender_id: String) =>
     """

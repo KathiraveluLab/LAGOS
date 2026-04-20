@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package lagos;
+
+// Common event type for the overlay network
+message OverlayEvent {
+  string node_id = 1;
+  EventType type = 2;
+  bytes payload = 3;
+  int64 timestamp = 4;
+}
+
+enum EventType {
+  HEARTBEAT = 0;
+  LATENCY_PROBE = 1;
+  GOVERNANCE_UPDATE = 2;
+  DDOS_ALERT = 3;
+}
+
+// Latency metrics for tail-latency analysis
+message LatencyMetrics {
+  repeated double samples = 1;
+  double tail_99th = 2;
+}
+
+// Accountability data linking ZK-proofs to governance
+message AccountableCommit {
+  string proof_hash = 1;
+  string target_resource = 2;
+  bytes signature = 3;
+}

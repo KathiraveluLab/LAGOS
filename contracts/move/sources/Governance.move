@@ -8,6 +8,7 @@ module lagos::governance {
         node_id: vector<u8>,
         owner: address,
         reputation: u64,
+        zk_proof_hash: vector<u8>, // Cryptographic link to Noir proofs
     }
 
     struct Registry has key {
@@ -35,9 +36,11 @@ module lagos::governance {
 
     public entry fun log_transaction(
         ledger: &mut TransactionLedger,
+        _zk_proof_hash: vector<u8>,
         _ctx: &mut TxContext
     ) {
         ledger.transactions = ledger.transactions + 1;
+        // In a real implementation, we would store the _zk_proof_hash in the ledger
     }
 
     public entry fun register_node(

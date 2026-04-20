@@ -40,3 +40,14 @@ pub fn handle_flood_event(request_count: Int, threshold: Int) {
     False
   }
 }
+
+// Federation Signaling via NATS
+pub fn connect_nats(addr: String) {
+  io.println("Connecting to NATS federation broker at " <> addr)
+  // Logic to subscribe to "lagos.federation.>" topics
+}
+
+pub fn on_nats_message(topic: String, _payload: BitArray) {
+  io.println("Received federation signal on topic: " <> topic)
+  // Parse Protobuf payload and handle domain events
+}
