@@ -1,0 +1,18 @@
+-- LAGOS Distributed Optimizer (Unison)
+-- These functions are content-addressed by their AST hash
+
+type LatencyInfo = {
+    nodeId : Text,
+    rtt : Float
+}
+
+optimizeScaling : [LatencyInfo] -> Optional Text
+optimizeScaling infos = 
+    -- Pure function to determine the best node to scale
+    -- In Unison, we don't send the code, we send the hash of this function
+    let
+        sorted = List.sortBy (info -> info.rtt) infos
+    in
+        case List.head sorted of
+            Some best -> Some (best.nodeId)
+            None -> None

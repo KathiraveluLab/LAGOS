@@ -1,0 +1,25 @@
+;; LAGOS Scaling Policy Contract
+;; Decidable logic for overlay governance
+
+(define-data-var scaling-threshold uint u1000) ;; max threshold for latency in ms
+(define-map nodes principal { reputation: uint, active: bool })
+
+;; Public function to update scaling policy
+(define-public (set-threshold (new-threshold uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u100))
+        (ok (var-set scaling-threshold new-threshold))
+    )
+)
+
+;; Read-only function to check if a node can scale
+(define-read-only (can-node-scale (node principal))
+    (let (
+        (node-data (unwrap! (map-get? nodes node) false))
+    )
+    (and (get active node-data) (> (get reputation node-data) u50))
+    )
+)
+
+;; Constants
+(define-data-var contract-owner principal tx-sender)
