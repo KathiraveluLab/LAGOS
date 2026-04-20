@@ -48,7 +48,8 @@ pub fn check_rate_limit(
   window_size: Int,
   limit: Int,
 ) {
-  let now = 123456789 // Hypothetical current timestamp
+  // Use Erlang interop for real-world timestamps
+  let now = os.system_time(os.Millisecond)
   let pruned_history = prune_history(history, now, window_size)
 
   if list.length(pruned_history) > limit {
@@ -67,10 +68,14 @@ fn prune_history(history: List(Int), now: Int, window_size: Int) {
 // Federation Signaling via NATS
 pub fn connect_nats(addr: String) {
   io.println("Connecting to NATS federation broker at " <> addr)
-  // Logic to subscribe to "lagos.federation.>" topics
+  # Subscription logic for "lagos.federation.>"
+  # In a production environment, this would spawn a NATS client process
+  # and subscribe to the federated signaling topic.
 }
 
 pub fn on_nats_message(topic: String, _payload: BitArray) {
   io.println("Received federation signal on topic: " <> topic)
-  // Parse Protobuf payload and handle domain events
+  # 1. Decode Protobuf OverlayEvent from payload
+  # 2. Dispatch to internal Gleam state machine
+  # 3. Trigger domain-level security or orchestration events
 }

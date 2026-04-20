@@ -62,7 +62,18 @@ actor OverlayNode
   be receive_gossip(sender_id: String, nodes: Array[String] val) =>
     _env.out.print(_id + " received gossip from " + sender_id)
     # Check if we've seen these nodes before to prevent broadcast storms
-    # Logic to update _gossip_history and conditionally re-gossip
+    var new_nodes = false
+    for node in nodes.values() do
+      if not _gossip_history.contains(node) then
+        _gossip_history.add(node)
+        new_nodes = true
+      end
+    end
+
+    if new_nodes then
+      # If we found new information, re-gossip to 3 neighbors
+      gossip(nodes)
+    end
 
   fun _hash(s: String): U64 =>
     var h: U64 = 0
@@ -79,7 +90,10 @@ actor OverlayNode
     Publish node status to the NATS federation signaling topic.
     """
     _env.out.print("Publishing heartbeat for " + _id + " to NATS lagos.federation.heartbeat")
-    // Logic to serialize Protobuf OverlayEvent and publish via NATS client
+    # In a real environment, we would use:
+    # let event = OverlayEvent(node_id: _id, type: HEARTBEAT)
+    # let payload = event.serialize()
+    # nats.publish("lagos.federation.heartbeat", payload)
 
   be ping(sender_id: String) =>
     """

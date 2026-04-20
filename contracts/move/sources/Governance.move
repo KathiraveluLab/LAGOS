@@ -59,6 +59,7 @@ module lagos::governance {
     public entry fun register_node(
         registry: &mut Registry,
         node_id: vector<u8>,
+        zk_proof_hash: vector<u8>,
         ctx: &mut TxContext
     ) {
         let node = NodeIdentity {
@@ -66,6 +67,7 @@ module lagos::governance {
             node_id,
             owner: tx_context::sender(ctx),
             reputation: 100,
+            zk_proof_hash,
         };
         registry.node_count = registry.node_count + 1;
         transfer::transfer(node, tx_context::sender(ctx));
