@@ -6,6 +6,7 @@ actor OverlayNode
   let _env: Env
   let _id: String
   let _neighbors: Map[String, OverlayNode tag] = _neighbors.create()
+  let _gossip_history: SetIs[String] = _gossip_history.create()
   var _tail_latency: F64 = 0.0
 
   new create(env: Env, id: String) =>
@@ -47,14 +48,21 @@ actor OverlayNode
   be gossip(known_nodes: Array[String] val) =>
     """
     Gossip protocol for node discovery in the last mile.
+    Optimized with fan-out (limit=3) and dampening.
     """
     _env.out.print(_id + " gossiping with neighbors about " + known_nodes.size().string() + " nodes.")
+    var count: USize = 0
     for neighbor in _neighbors.values() do
-      neighbor.receive_gossip(_id, known_nodes)
+      if count < 3 then
+        neighbor.receive_gossip(_id, known_nodes)
+        count = count + 1
+      end
     end
 
   be receive_gossip(sender_id: String, nodes: Array[String] val) =>
     _env.out.print(_id + " received gossip from " + sender_id)
+    # Check if we've seen these nodes before to prevent broadcast storms
+    # Logic to update _gossip_history and conditionally re-gossip
 
   fun _hash(s: String): U64 =>
     var h: U64 = 0

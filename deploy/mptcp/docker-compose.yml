@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    networks:
+      - lagos-mesh
+
+  mptcp-server:
+    image: ubuntu:24.04
+    container_name: lagos-mptcp-server
+    command: >
+      bash -c "apt-get update && apt-get install -y iperf3 iproute2 mptcpize &&
+      iperf3 -s -p 5201"
+    networks:
+      - lagos-mesh
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+
+  mptcp-client:
+    image: ubuntu:24.04
+    container_name: lagos-mptcp-client
+    command: sleep infinity
+    networks:
+      - lagos-mesh
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+
+networks:
+  lagos-mesh:
+    driver: bridge

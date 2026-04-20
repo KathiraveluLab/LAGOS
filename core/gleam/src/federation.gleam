@@ -49,16 +49,19 @@ pub fn check_rate_limit(
   limit: Int,
 ) {
   let now = 123456789 // Hypothetical current timestamp
-  let relevant_history =
-    history
-    |> list.filter(fn(ts) { ts > now - window_size })
+  let pruned_history = prune_history(history, now, window_size)
 
-  if list.length(relevant_history) > limit {
+  if list.length(pruned_history) > limit {
     io.println("Rate limit exceeded for domain: " <> domain_id)
     Error("Rate limit exceeded")
   } else {
-    Ok(list.append(relevant_history, [now]))
+    Ok(list.append(pruned_history, [now]))
   }
+}
+
+fn prune_history(history: List(Int), now: Int, window_size: Int) {
+  history
+  |> list.filter(fn(ts) { ts > now - window_size })
 }
 
 // Federation Signaling via NATS

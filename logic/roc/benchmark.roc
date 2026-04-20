@@ -7,9 +7,15 @@ app "lagos-benchmark"
 BenchmarkResult : { 
     protocol: [TCP, MPTCP], 
     throughput_mbps: F64, 
+    throughput_variance: F64, # Stability metric
     latency_ms: F64,
     packet_loss: F64 
 }
+
+## Calculates stability as (1 - variance/avg)
+calculateStability : BenchmarkResult -> F64
+calculateStability = \res ->
+    1.0 - (res.throughput_variance / res.throughput_mbps)
 
 main =
     Stdout.line "LAGOS MPTCP Benchmarking Tool v1.0"
