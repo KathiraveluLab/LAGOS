@@ -16,9 +16,17 @@ module lagos::governance {
         node_count: u64,
     }
 
+    use sui::table::{Self, Table};
+
     struct TransactionLedger has key {
         id: UID,
-        transactions: u64,
+        history: Table<vector<u8>, Accountability>,
+    }
+
+    struct Accountability has store {
+        zk_proof_hash: vector<u8>,
+        timestamp: u64,
+        action: vector<u8>,
     }
 
     fun init(ctx: &mut TxContext) {
@@ -28,19 +36,24 @@ module lagos::governance {
         };
         let ledger = TransactionLedger {
             id: object::new(ctx),
-            transactions: 0,
+            history: table::new(ctx),
         };
         transfer::share_object(registry);
         transfer::share_object(ledger);
     }
 
-    public entry fun log_transaction(
+    public entry fun record_accountability(
         ledger: &mut TransactionLedger,
-        _zk_proof_hash: vector<u8>,
-        _ctx: &mut TxContext
+        zk_proof_hash: vector<u8>,
+        action: vector<u8>,
+        ctx: &mut TxContext
     ) {
-        ledger.transactions = ledger.transactions + 1;
-        // In a real implementation, we would store the _zk_proof_hash in the ledger
+        let record = Accountability {
+            zk_proof_hash,
+            timestamp: tx_context::epoch(ctx),
+            action,
+        };
+        table::add(&mut ledger.history, zk_proof_hash, record);
     }
 
     public entry fun register_node(

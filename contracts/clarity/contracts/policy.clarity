@@ -4,6 +4,16 @@
 (define-data-var scaling-threshold uint u1000) ;; max threshold for latency in ms
 (define-map nodes principal { reputation: uint, active: bool })
 (define-map consortium-members principal { joined: uint })
+(define-map reputation-votes { node: principal, voter: principal } { value: int })
+
+;; Public function to cast a reputation vote
+(define-public (vote-reputation (node principal) (vote int))
+    (begin
+        (asserts! (and (>= vote -1) (<= vote u1)) (err u102))
+        (asserts! (is-some (map-get? consortium-members tx-sender)) (err u103))
+        (ok (map-set reputation-votes { node: node, voter: tx-sender } { value: vote }))
+    )
+)
 
 ;; Public function to register a new domain in the consortium
 (define-public (register-domain (member principal))

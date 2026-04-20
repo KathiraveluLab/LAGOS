@@ -41,6 +41,26 @@ pub fn handle_flood_event(request_count: Int, threshold: Int) {
   }
 }
 
+// Sliding Window Rate Limiter
+pub fn check_rate_limit(
+  domain_id: String,
+  history: List(Int),
+  window_size: Int,
+  limit: Int,
+) {
+  let now = 123456789 // Hypothetical current timestamp
+  let relevant_history =
+    history
+    |> list.filter(fn(ts) { ts > now - window_size })
+
+  if list.length(relevant_history) > limit {
+    io.println("Rate limit exceeded for domain: " <> domain_id)
+    Error("Rate limit exceeded")
+  } else {
+    Ok(list.append(relevant_history, [now]))
+  }
+}
+
 // Federation Signaling via NATS
 pub fn connect_nats(addr: String) {
   io.println("Connecting to NATS federation broker at " <> addr)

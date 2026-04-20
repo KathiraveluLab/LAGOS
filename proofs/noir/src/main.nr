@@ -1,11 +1,12 @@
-// LAGOS Node Validation Circuit (Noir)
-// ZK-Accountability proof logic
-
-fn main(node_id : Field, min_id : Field, max_id : Field) {
-    // Verify that the node_id is within the governed range
-    // without revealing the node_id in the public proof.
-    assert(node_id as u64 >= min_id as u64);
-    assert(node_id as u64 <= max_id as u64);
+// Merkle depth 20 allows for up to 2^20 (~1M) nodes
+fn main(
+    leaf: Field,
+    root: pub Field,
+    index: Field,
+    hash_path: [Field; 20]
+) {
+    let computed_root = std::merkle::compute_merkle_root(leaf, index, hash_path);
+    assert(root == computed_root);
 }
 
 #[test]

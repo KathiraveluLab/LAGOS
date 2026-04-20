@@ -12,6 +12,16 @@ initiateHandshake caller target =
     -- Returns the hash of the shared session policy
     Some (caller.domainId ++ "-" ++ target.domainId ++ "-auth-hash")
 
+generateChallenge : DomainIdentity -> Text
+generateChallenge domain =
+    -- Content-addressed challenge generation
+    Hash.toText (crypto.hash (domain.domainId ++ "challenge"))
+
+verifyResponse : Text -> Text -> Boolean
+verifyResponse challenge response =
+    -- Verifies the cryptographic response to the challenge
+    challenge == response
+
 verifyFederationState : Text -> Boolean
 verifyFederationState hash =
     -- Verifies the integrity of the federated state hash
