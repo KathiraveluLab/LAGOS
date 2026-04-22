@@ -14,7 +14,7 @@ sudo apt-get install -y \
     curl git build-essential pkg-config libssl-dev libreadline-dev \
     zlib1g-dev libsqlite3-dev libbz2-dev llvm libncurses5-dev \
     libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev \
-    python3-openssl wget cmake m4
+    python3-openssl wget cmake m4 clang libclang-dev
 
 # 2. Rust (Required for Sui, Lurk, Clarinet, etc.)
 if ! command -v rustup &> /dev/null; then
