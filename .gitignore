@@ -1,22 +1,33 @@
-/_build
-/cover
-/deps
-/doc
-/.fetch
+# Polyglot Build Artifacts
+/target/
+/build/
+/_build/
+/deps/
+/cover/
+/doc/
+/.fetch/
 erl_crash.dump
 *.ez
 *.beam
-/config/*.secret.exs
-.elixir_ls/
+/node_modules/
+*.o
+*.a
+*.so
+/bin/
 
-# Design artifacts
+# Toolchain Clones
+/lurk-rs/
+
+# Research Artifacts
 _paper
 _bmad
 
-# AI Agent files
+# IDE & AI Metadata
+.agent
 .claude
 .codex
 .cursor
 .vscode
-.agent
 .gemini
+.elixir_ls/
+/config/*.secret.exs
