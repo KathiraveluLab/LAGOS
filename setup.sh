@@ -47,7 +47,13 @@ fi
 # 5. Gleam
 if ! command -v gleam &> /dev/null; then
     echo "Installing Gleam..."
-    curl -fsSL https://gleam.run/install.sh | sh
+    GLEAM_VERSION="v1.15.4"
+    GLEAM_FILE="gleam-$GLEAM_VERSION-x86_64-unknown-linux-musl.tar.gz"
+    wget "https://github.com/gleam-lang/gleam/releases/download/$GLEAM_VERSION/$GLEAM_FILE"
+    tar -xzf "$GLEAM_FILE"
+    mkdir -p "$HOME/.local/bin"
+    mv gleam "$HOME/.local/bin/gleam"
+    rm "$GLEAM_FILE"
 else
     echo "Gleam already installed."
 fi
