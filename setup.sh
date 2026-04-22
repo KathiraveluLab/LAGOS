@@ -37,7 +37,7 @@ fi
 if ! command -v ponyup &> /dev/null; then
     echo "Installing ponyup..."
     sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/master/ponyup-init.sh)"
-    export PATH="$HOME/.local/share/ponylang/bin:$PATH"
+    export PATH="$HOME/.local/share/ponyup/bin:$PATH"
     ponyup update ponyc release
     ponyup update corral release
 else
