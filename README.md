@@ -74,13 +74,22 @@ LAGOS represents a unique integration of nine specialized programming languages:
 
 ## Getting Started
 
-### Prerequisites
+### Automated Setup
 
-The LAGOS framework requires several toolchains. We recommend using the provided containerized environment for MPTCP evaluations.
+For a quick setup of all nine specialized toolchains and their dependencies on Linux, run the provided setup script:
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+After the script completes, restart your terminal or source your shell profile (e.g., `source ~/.bashrc`) to update your environment variables.
+
+### Manual Prerequisites
 
 - [Ponyup](https://github.com/ponylang/ponyup) (Pony & Corral)
 - [Gleam](https://gleam.run/getting-started/)
-- [Aptos CLI](https://aptos.dev/tools/aptos-cli) (Move)
+- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) (Move)
 - [Clarinet](https://github.com/hirosystems/clarinet) (Clarity)
 - [Nargo](https://noir-lang.org/getting_started/nargo_installation) (Noir)
 
