@@ -1,55 +1,38 @@
-# Gleam Tutorial: Federation Orchestration
+# Gleam Tutorial Series: LAGOS Orchestration
 
-Gleam is the primary orchestration language for LAGOS. It runs on the BEAM virtual machine, providing massive concurrency and fault tolerance—ideal for managing global overlay networks.
+Gleam is the primary orchestration language for the LAGOS framework. Running on the BEAM virtual machine, it provides the fault-tolerant, concurrent foundation required for managing global-scale distributed overlay networks.
 
-## Roles in LAGOS
-1.  **Domain Orchestration**: Managing the lifecycle of domains and participating nodes.
-2.  **DDoS Mitigation**: Real-time detection of traffic floods through message passing.
-3.  **Signaling**: Communicating across administrative domains via NATS/Protobuf.
+This series of tutorials will take you from the basics of Gleam to implementing core components of the LAGOS research framework.
 
-## Tutorial: Detecting a Traffic Flood
+## Curriculum
 
-In this tutorial, we will use Gleam's message passing to build a simple rate limiter that detects DDoS attacks.
+### 1. [Gleam Basics & OTP](./01_basics.gleam)
+Learn the syntax of Gleam and its unique role as a type-safe language for the BEAM. We'll explore how messaging and processes form the backbone of LAGOS.
 
-### `tutorial.gleam`
-```gleam
-import gleam/io
-import gleam/list
+### 2. [Federation Orchestration](./02_orchestration.gleam)
+Dive into domain management. This tutorial demonstrates how Gleam handles the lifecycle of federated nodes, including joining, leaving, and monitoring domain health.
 
-pub fn main() {
-  io.println("--- LAGOS Gleam Tutorial ---")
-  
-  // Simulated request history (timestamps)
-  let history = [100, 105, 110, 115, 120]
-  let now = 125
-  let window = 30
-  let limit = 3
+### 3. [Advanced DDoS Mitigation](./03_ddos_mitigation.gleam)
+Implement a core LAGOS research pillar. We'll build a high-performance sliding window rate limiter that leverages Gleam's functional purity for predictable security logic.
 
-  io.println("Checking rate limit for Domain A...")
-  case check_flood(history, now, window, limit) {
-    True -> io.println("ALERT: DDoS Flood detected! Triggering circuit breaker.")
-    False -> io.println("Traffic levels normal.")
-  }
-}
+### 4. [Cross-Stack Integration](./04_stack_integration.gleam)
+See how Gleam acts as the multi-language coordination layer. This tutorial shows how Gleam "glues" the stack together, interacting with routing hubs (Pony) and governance ledgers (Move).
 
-pub fn check_flood(history: List(Int), now: Int, window: Int, limit: Int) -> Bool {
-  let active_requests = 
-    history
-    |> list.filter(fn(ts) { ts > now - window })
-  
-  list.length(active_requests) > limit
-}
-```
+---
 
-## Running the Tutorial
+## How to Run the Tutorials
 
-To run this tutorial, ensure you have Gleam installed and run:
+Each tutorial can be run individually using the Gleam CLI. Ensure you are in the `tutorials/gleam` directory or have the project root correctly configured.
 
 ```bash
-gleam run -m tutorial
+gleam run -m 01_basics
+gleam run -m 02_orchestration
+gleam run -m 03_ddos_mitigation
+gleam run -m 04_stack_integration
 ```
 
-## Key Concepts
-- **Functional Purity**: Logic is predictable and easy to test.
-- **Pipelining (`|>`)**: Clean data flow for traffic analysis.
-- **Fault Tolerance**: In a full LAGOS deployment, this logic would run in supervised processes that can recover instantly from failures.
+## Prerequisite Knowledge
+- Basic understanding of functional programming.
+- Familiarity with the Actor Model (helpful but not required).
+
+Ready to start? Begin with [01_Basics](./01_basics.gleam).
