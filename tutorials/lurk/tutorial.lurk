@@ -1,0 +1,6 @@
+;; A simple recursive function to sum a list of values provably
+(letrec ((sum (lambda (list)
+                (if (eq list nil)
+                    0
+                    (+ (car list) (sum (cdr list)))))))
+  (sum '(10 20 30 40)))

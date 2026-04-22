@@ -1,0 +1,10 @@
+-- A simple check for hub eligibility
+hub.isEligible : Text -> Boolean
+hub.isEligible nodeId =
+  match nodeId with
+    "hub1" -> true
+    "hub2" -> true
+    _      -> false
+
+-- A test for our eligibility check
+> hub.isEligible "hub1"

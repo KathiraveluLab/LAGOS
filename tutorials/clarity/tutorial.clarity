@@ -1,0 +1,22 @@
+;; Define the administrative account
+(define-constant admin 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM)
+
+;; Data map to store domain membership
+(define-map Members principal bool)
+
+;; Public function to add a member
+(define-public (add-member (new-member principal))
+  (begin
+    ;; Check if the caller is the admin
+    (asserts! (is-eq tx-sender admin) (err u100))
+    
+    ;; Add member to the map
+    (map-set Members new-member true)
+    (ok true)
+  )
+)
+
+;; Read-only function to check membership
+(define-read-only (is-member (user principal))
+  (default-to false (map-get? Members user))
+)
