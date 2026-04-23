@@ -40,3 +40,4 @@ _bmad
 .gemini
 .elixir_ls/
 /config/*.secret.exs
+docker_build.log

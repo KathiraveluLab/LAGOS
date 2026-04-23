@@ -1,0 +1,17 @@
+target
+build
+_build
+.git
+.agent
+.claude
+.codex
+.cursor
+.gemini
+lurk-rs/target
+lurk-rs/build
+lurk-rs/_build
+lurk-rs_new/target
+lurk-rs_new/build
+lurk-rs_new/_build
+grumpkin-msm-patched/target
+grumpkin-msm-patched/build

@@ -1,10 +1,20 @@
-FROM rust:slim-bookworm
+FROM ubuntu:24.04
+
+# Avoid interactive prompts during apt-get
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    curl git build-essential pkg-config libssl-dev cmake clang libclang-dev
+    curl git build-essential pkg-config libssl-dev cmake clang libclang-dev \
+    python3-minimal m4
+
+# Install Rust (Ubuntu doesn't have a recent enough package)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /app
 COPY lurk-rs/ /app/lurk-rs/
+COPY grumpkin-msm-patched/ /app/grumpkin-msm-patched/
 
+# Fix Cargo.toml path to the patched grumpkin-msm (matches COPY destination)
 WORKDIR /app/lurk-rs
 RUN cargo build --release

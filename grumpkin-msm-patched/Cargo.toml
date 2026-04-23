@@ -1,0 +1,69 @@
+[package]
+name = "grumpkin-msm"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Optimized multiscalar multiplicaton for the Grumpkin curve cycle"
+repository = "https://github.com/lurk-lab/grumpkin-msm"
+readme = "README.md"
+include = [
+    "/benches/**",
+    "/cuda/**",
+    "/src/**",
+    "/Cargo.toml",
+    "/build.rs",
+    "/README.md",
+]
+rust-version = "1.70"
+
+[features]
+# By default, compile with ADX extension if the host supports it.
+# Binary can be executed on systems similar to the host.
+default = []
+# Compile in portable mode, without ISA extensions.
+# Binary can be executed on all systems.
+portable = [ "blst/portable", "semolina/portable" ]
+# Enable ADX even if the host CPU doesn't support it.
+# Binary can be executed on Broadwell+ and Ryzen+ systems.
+force-adx = [ "blst/force-adx", "semolina/force-adx" ]
+# Enable CUDA, compile with nvcc, and link to GPU kernels
+cuda = []
+cuda-mobile = []
+
+[dependencies]
+blst = "~0.3.11"
+semolina = "~0.1.3"
+sppark = "~0.1.2"
+halo2curves = { version = "0.6.0" }
+pasta_curves = { version = "0.5.0", features = ["repr-c"] }
+rand = "^0"
+rand_chacha = "^0"
+rayon = "1.5"
+
+[build-dependencies]
+cc = "^1.0.70"
+which = "^4.0"
+
+[dev-dependencies]
+criterion = { version = "0.3", features = [ "html_reports" ] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# see https://github.com/rust-random/rand/pull/948
+getrandom = { version = "0.2.0", default-features = false, features = ["js"] }
+
+[[bench]]
+name = "grumpkin_msm"
+harness = false
+
+[[bench]]
+name = "pasta_msm"
+harness = false
+
+
+[profile.dev-ci]
+inherits = "dev"
+# By compiling dependencies with optimizations, performing tests gets much faster.
+opt-level = 3
+lto = "thin"
+incremental = false
+codegen-units = 16
