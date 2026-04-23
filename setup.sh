@@ -41,18 +41,36 @@ execute() {
     fi
 }
 
+# Function to persist PATH updates
+persist_path() {
+    local dir=$1
+    # Expand ~ if present
+    dir="${dir/#\~/$HOME}"
+    if [[ ":$PATH:" != *":$dir:"* ]]; then
+        export PATH="$dir:$PATH"
+    fi
+    if ! grep -q "$dir" "$HOME/.bashrc"; then
+        echo "export PATH=\"\$PATH:$dir\"" >> "$HOME/.bashrc"
+        echo " [INFO] Added $dir to ~/.bashrc"
+    fi
+}
+
 echo "==================================================="
 echo "   LAGOS Environment Setup - Robust Mode"
 echo "==================================================="
 
 # 1. System Dependencies
-execute "Installing system dependencies" \
-    sudo apt-get update && \
+echo " [PHASE] Installing system dependencies..."
+if sudo apt-get update && \
     sudo apt-get install -y \
     curl git build-essential pkg-config libssl-dev libreadline-dev \
     zlib1g-dev libsqlite3-dev libbz2-dev llvm libncurses5-dev \
     libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev \
-    python3-openssl wget cmake m4 clang libclang-dev
+    python3-openssl wget cmake m4 clang libclang-dev; then
+    echo " [OK] System dependencies installed."
+else
+    echo " [WARNING] Could not install system dependencies. Ensure you have sudo access."
+fi
 
 # 2. Rust (Required for Sui, Lurk, Clarinet, etc.)
 if ! command -v rustup &> /dev/null; then
@@ -61,6 +79,10 @@ if ! command -v rustup &> /dev/null; then
     source "$HOME/.cargo/env"
 else
     echo "Rust already installed."
+fi
+# Ensure cargo env is in bashrc
+if ! grep -q ".cargo/env" "$HOME/.bashrc"; then
+    echo ". \"\$HOME/.cargo/env\"" >> "$HOME/.bashrc"
 fi
 
 # 3. Erlang/OTP (Required for Gleam)
@@ -74,12 +96,13 @@ fi
 if ! command -v ponyup &> /dev/null; then
     execute "Installing ponyup" \
         sh -c "curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/master/ponyup-init.sh | sh -s"
-    export PATH="$HOME/.local/share/ponyup/bin:$PATH"
+    persist_path "$HOME/.local/share/ponyup/bin"
     execute "Updating Ponyc" ponyup update ponyc release
     execute "Updating Corral" ponyup update corral release
 else
     echo "Ponyup already installed."
 fi
+persist_path "$HOME/.local/share/ponyup/bin"
 
 # 5. Gleam
 if ! command -v gleam &> /dev/null; then
@@ -94,17 +117,19 @@ if ! command -v gleam &> /dev/null; then
 else
     echo "Gleam already installed."
 fi
+persist_path "$HOME/.local/bin"
 
 # 6. Sui CLI (Move)
 if ! command -v sui &> /dev/null; then
     execute "Installing Sui CLI (via suiup)" \
         sh -c "curl -sSfL https://raw.githubusercontent.com/MystenLabs/suiup/main/install.sh | sh"
     # Suiup installs to ~/.suiup/bin by default
-    export PATH="$HOME/.suiup/bin:$PATH"
+    persist_path "$HOME/.suiup/bin"
     execute "Installing Sui toolchain" suiup install sui
 else
     echo "Sui CLI already installed."
 fi
+persist_path "$HOME/.suiup/bin"
 
 # 7. Clarinet (Clarity)
 if ! command -v clarinet &> /dev/null; then
@@ -123,19 +148,19 @@ fi
 if ! command -v nargo &> /dev/null; then
     execute "Installing Noir installer" \
         sh -c "curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash"
-    export PATH="$HOME/.nargo/bin:$PATH"
+    persist_path "$HOME/.nargo/bin"
     execute "Installing Noir toolchain (nargo)" noirup
 else
     echo "Noir already installed."
 fi
+persist_path "$HOME/.nargo/bin"
 
 # 9. Cairo (Scarb)
 if ! command -v scarb &> /dev/null; then
     execute "Installing Scarb" \
         sh -c "curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh"
-else
-    echo "Scarb already installed."
 fi
+persist_path "$HOME/.local/bin"
 
 # 10. Lurk (Search for binary or stabilize via Docker)
 if ! command -v lurk &> /dev/null; then
@@ -147,7 +172,10 @@ if ! command -v lurk &> /dev/null; then
         echo " [INFO] Lurk binary not found, but Docker is available."
         echo " [ACTION] Stabilizing Lurk via Docker (Debian Bookworm fallback)..."
         execute "Building Lurk image" docker build -t lagos-lurk -f Dockerfile.lurk .
-        execute "Extracting Lurk binary" docker run --rm -v "$(pwd)":/out lagos-lurk cp /app/lurk-rs/target/release/lurk /out/
+        echo " [ACTION] Extracting Lurk binary via Create/CP (Robust Mode)..."
+        execute "Creating temporary Lurk container" docker create --name lagos-lurk-tmp lagos-lurk
+        execute "Extracting binary" docker cp lagos-lurk-tmp:/app/lurk-rs/target/release/lurk ./lurk
+        execute "Removing temporary container" docker rm lagos-lurk-tmp
         mkdir -p "$HOME/.local/bin"
         execute "Installing extracted Lurk" mv ./lurk "$HOME/.local/bin/lurk"
     else
@@ -157,40 +185,49 @@ if ! command -v lurk &> /dev/null; then
 else
     echo "Lurk already installed."
 fi
-export PATH="$HOME/.local/bin:$PATH"
+persist_path "$HOME/.local/bin"
 
 
 
 # 11. Roc
-if ! command -v roc &> /dev/null; then
+if ! command -v roc &> /dev/null && [ ! -f "$HOME/roc/roc" ]; then
     ROC_VERSION="roc_nightly-linux_x86_64-latest.tar.gz"
     execute "Downloading Roc" wget -q "https://github.com/roc-lang/roc/releases/download/nightly/$ROC_VERSION"
     mkdir -p "$HOME/roc"
     execute "Extracting Roc" tar -xzf "$ROC_VERSION" -C "$HOME/roc" --strip-components=1
     rm "$ROC_VERSION"
-    export PATH="$HOME/roc:$PATH"
 else
-    echo "Roc already installed."
+    echo "Roc already installed (or files found in $HOME/roc)."
 fi
+persist_path "$HOME/roc"
 
 # 12. Unison (UCM)
-if ! command -v ucm &> /dev/null; then
+if ! command -v ucm &> /dev/null && [ ! -f "$HOME/unison/ucm" ]; then
     UCM_FILE="ucm-linux-x64.tar.gz"
     execute "Downloading Unison" wget -q "https://github.com/unisonweb/unison/releases/latest/download/$UCM_FILE"
     mkdir -p "$HOME/unison"
     execute "Extracting Unison" tar -xzf "$UCM_FILE" -C "$HOME/unison"
     rm "$UCM_FILE"
-    export PATH="$HOME/unison:$PATH"
 else
-    echo "Unison already installed."
+    echo "Unison already installed (or files found in $HOME/unison)."
 fi
+persist_path "$HOME/unison"
+
+echo "--- Final Verification ---"
+for cmd in ponyc gleam sui clarinet nargo scarb roc ucm lurk; do
+    if command -v $cmd &> /dev/null; then
+        echo " [OK] $cmd is accessible."
+    else
+        echo " [MISSING] $cmd is not in PATH."
+    fi
+done
 
 echo "---------------------------------------------------"
 echo "LAGOS setup complete!"
 if [ "$IS_SOURCED" = true ]; then
     echo "Since this script was sourced, your current PATH has been updated."
-    echo "However, it is still recommended to restart your shell for all profile changes to take effect."
 else
-    echo "Please restart your shell or run 'source ~/.bashrc' (or your shell profile) to update your PATH."
+    echo "PATH updates have been added to your ~/.bashrc."
+    echo "Please run 'source ~/.bashrc' or restart your shell to apply changes."
 fi
 echo "---------------------------------------------------"
