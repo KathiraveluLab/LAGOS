@@ -1,19 +1,21 @@
 # Polyglot Build Artifacts
-/target/
-/build/
-/_build/
-/deps/
-/cover/
+target/
+build/
+_build/
+deps/
+cover/
+
 /doc/
 /.fetch/
 erl_crash.dump
 *.ez
 *.beam
-/node_modules/
+node_modules/
 *.o
 *.a
 *.so
-/bin/
+bin/
+
 
 # Compiled Binaries
 /pony

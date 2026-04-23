@@ -1,1 +1,0 @@
--record(leave_domain, {domain_id :: binary()}).

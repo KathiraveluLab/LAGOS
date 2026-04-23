@@ -1,1 +1,0 @@
--record(join_domain, {domain_id :: binary()}).
