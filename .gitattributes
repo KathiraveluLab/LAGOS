@@ -1,0 +1,16 @@
+# Mark Rust dependencies as vendored
+grumpkin-msm-patched/** linguist-vendored
+
+# Ensure READMEs and documentation are prioritized
+*.md linguist-documentation
+
+# Mark specialised research languages explicitly
+core/pony/** linguist-language=Pony
+core/gleam/** linguist-language=Gleam
+fns/unison/** linguist-language=Unison
+logic/roc/** linguist-language=Roc
+proofs/noir/** linguist-language=Noir
+proofs/cairo/** linguist-language=Cairo
+proofs/lurk/** linguist-language=Lurk
+contracts/move/** linguist-language=Move
+contracts/clarity/** linguist-language=Clarity
