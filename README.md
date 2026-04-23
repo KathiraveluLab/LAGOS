@@ -83,7 +83,12 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+> [!NOTE]
+> **Lurk Stabilization**: The `setup.sh` script is configured to automatically stabilize the `lurk` toolchain via Docker if a local binary is missing and Docker is available. This ensures parity across distributions with varying C++ toolchains (e.g., Ubuntu 24.04).
+
+
 After the script completes, restart your terminal or source your shell profile (e.g., `source ~/.bashrc`) to update your environment variables.
+
 
 ### Manual Prerequisites
 
@@ -93,3 +98,8 @@ After the script completes, restart your terminal or source your shell profile (
 - [Clarinet](https://github.com/hirosystems/clarinet) (Clarity)
 - [Nargo](https://noir-lang.org/getting_started/nargo_installation) (Noir)
 
+## Documentation & Usage
+
+For a detailed end-to-end explanation of the LAGOS workflow and specific command-line instructions for all nine toolchains, please refer to the:
+
+👉 **[LAGOS USER GUIDE](USER-GUIDE.md)**

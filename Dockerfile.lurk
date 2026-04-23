@@ -1,0 +1,10 @@
+FROM rust:1.85-slim-bookworm
+
+RUN apt-get update && apt-get install -y \
+    curl git build-essential pkg-config libssl-dev cmake clang libclang-dev
+
+WORKDIR /app
+COPY lurk-rs/ /app/lurk-rs/
+
+WORKDIR /app/lurk-rs
+RUN cargo build --release

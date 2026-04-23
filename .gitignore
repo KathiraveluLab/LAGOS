@@ -15,8 +15,15 @@ erl_crash.dump
 *.so
 /bin/
 
+# Compiled Binaries
+/pony
+/lurk
+/lagos_integration_test
+
+
 # Toolchain Clones
 /lurk-rs/
+lurk-rs_new/
 
 # Research Artifacts
 _paper

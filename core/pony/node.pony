@@ -1,7 +1,5 @@
 use "collections"
 
-use @calculate99thPercentileC[F64](latencies: Pointer[F64] tag, len: USize)
-
 actor OverlayNode
   let _env: Env
   let _id: String
@@ -13,6 +11,9 @@ actor OverlayNode
     _env = env
     _id = id
     _env.out.print("LAGOS Overlay Node " + _id + " initialized.")
+
+  be add_neighbor(id: String, neighbor: OverlayNode tag) =>
+    _neighbors(id) = neighbor
 
   be update_tail_latency(latency: F64) =>
     _tail_latency = latency
@@ -43,25 +44,19 @@ actor OverlayNode
     end
 
   be receive_p2p(sender_id: String, data: String) =>
-    _env.out.print("Received P2P packet from " + sender_id + " at " + _id)
+    _env.out.print("Received P2P packet from " + sender_id + " at " + _id + ": " + data)
 
   be gossip(known_nodes: Array[String] val) =>
     """
-    Gossip protocol for node discovery in the last mile.
-    Optimized with fan-out (limit=3) and dampening.
+    Internal trigger for gossip.
     """
-    _env.out.print(_id + " gossiping with neighbors about " + known_nodes.size().string() + " nodes.")
-    var count: USize = 0
-    for neighbor in _neighbors.values() do
-      if count < 3 then
-        neighbor.receive_gossip(_id, known_nodes)
-        count = count + 1
-      end
-    end
+    _receive_gossip_logic("", known_nodes)
 
   be receive_gossip(sender_id: String, nodes: Array[String] val) =>
-    _env.out.print(_id + " received gossip from " + sender_id)
-    # Check if we've seen these nodes before to prevent broadcast storms
+    _receive_gossip_logic(sender_id, nodes)
+
+  be _receive_gossip_logic(sender_id: String, nodes: Array[String] val) =>
+    // Check if we've seen these nodes before to prevent broadcast storms
     var new_nodes = false
     for node in nodes.values() do
       if not _gossip_history.contains(node) then
@@ -71,9 +66,16 @@ actor OverlayNode
     end
 
     if new_nodes then
-      # If we found new information, re-gossip to 3 neighbors
-      gossip(nodes)
+      _env.out.print(_id + " received new gossip from " + sender_id + ". Forwarding...")
+      var count: USize = 0
+      for (id, neighbor) in _neighbors.pairs() do
+        if (id != sender_id) and (count < 3) then
+          neighbor.receive_gossip(_id, nodes)
+          count = count + 1
+        end
+      end
     end
+
 
   fun _hash(s: String): U64 =>
     var h: U64 = 0
@@ -90,10 +92,6 @@ actor OverlayNode
     Publish node status to the NATS federation signaling topic.
     """
     _env.out.print("Publishing heartbeat for " + _id + " to NATS lagos.federation.heartbeat")
-    # In a real environment, we would use:
-    # let event = OverlayEvent(node_id: _id, type: HEARTBEAT)
-    # let payload = event.serialize()
-    # nats.publish("lagos.federation.heartbeat", payload)
 
   be ping(sender_id: String) =>
     """
@@ -109,3 +107,4 @@ actor OverlayNode
     Handle a latency response.
     """
     _env.out.print("Received pong from " + responder_id + " at " + _id)
+

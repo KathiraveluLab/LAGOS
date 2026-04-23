@@ -1,13 +1,11 @@
 import gleeunit
 import gleeunit/should
 import gleam/io
-import gleam/list
-import gleam/erlang/process
-import gleam/erlang/os
 
 pub fn main() {
   gleeunit.main()
 }
+
 
 // Helper to log results to Markdown
 fn write_log(scenario: String, status: String, details: String) {
@@ -36,11 +34,11 @@ pub fn scenario_2_latency_aware_routing_test() {
   io.println("--- Running Scenario 2: Latency-aware Routing (Gleam) ---")
   
   // Simulate jittered latencies (Pillar 2)
-  let latencies = [105.0, 112.0, 125.0, 98.0, 145.0]
+  let _latencies = [105.0, 112.0, 125.0, 98.0, 145.0]
   let tail_latency = 145.0
   let threshold = 150.0
   
-  let is_acceptable = tail_latency < threshold
+  let is_acceptable = tail_latency <. threshold
   is_acceptable |> should.equal(True)
   
   write_log("Latency-aware Routing", "PASSED", "Tail Latency " <> "145.0ms" <> " below threshold " <> "150.0ms")

@@ -137,12 +137,29 @@ else
     echo "Scarb already installed."
 fi
 
-# 10. Lurk (Search for binary or skip build if exists)
+# 10. Lurk (Search for binary or stabilize via Docker)
 if ! command -v lurk &> /dev/null; then
-    echo " [INFO] Lurk binary not found. Please install via Docker-extract or use a pre-built binary."
+    if [ -f "./lurk" ]; then
+        echo " [INFO] Found local Lurk binary. Installing..."
+        mkdir -p "$HOME/.local/bin"
+        execute "Installing local Lurk" mv ./lurk "$HOME/.local/bin/lurk"
+    elif command -v docker &> /dev/null; then
+        echo " [INFO] Lurk binary not found, but Docker is available."
+        echo " [ACTION] Stabilizing Lurk via Docker (Debian Bookworm fallback)..."
+        execute "Building Lurk image" docker build -t lagos-lurk -f Dockerfile.lurk .
+        execute "Extracting Lurk binary" docker run --rm -v "$(pwd)":/out lagos-lurk cp /app/lurk-rs/target/release/lurk /out/
+        mkdir -p "$HOME/.local/bin"
+        execute "Installing extracted Lurk" mv ./lurk "$HOME/.local/bin/lurk"
+    else
+        echo " [WARNING] Lurk binary not found and Docker not available for stabilization."
+        echo " [ACTION] Please manually provide a 'lurk' binary in the current directory or install Docker."
+    fi
 else
     echo "Lurk already installed."
 fi
+export PATH="$HOME/.local/bin:$PATH"
+
+
 
 # 11. Roc
 if ! command -v roc &> /dev/null; then
