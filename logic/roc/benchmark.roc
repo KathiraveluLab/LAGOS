@@ -1,5 +1,5 @@
 app "lagos-benchmark"
-    packages { pf: "https://github.com/roc-lang/basic-cli/releases/download/0.10.0/749f7ba3b81165d6f1a8e1.tar.br" }
+    packages { pf: "https://github.com/roc-lang/basic-cli/releases/download/0.10.0/vNe6s9hWzoTZtFmNkvEICPErI9ptji_ySjicO6CkucY.tar.br" }
     imports [pf.Stdout, pf.Task]
     provides [main] to pf
 
@@ -24,7 +24,7 @@ main =
 comparePerformance : BenchmarkResult, BenchmarkResult -> Str
 comparePerformance = \tcp, mptcp ->
     improvement = ((mptcp.throughput_mbps - tcp.throughput_mbps) / tcp.throughput_mbps) * 100.0
-    "MPTCP throughput improvement over TCP: \(Num.toStr improvement)%"
+    "MPTCP throughput improvement over TCP: ${Num.toStr improvement}%"
 
 ## Parses a benchmak log line (e.g. "PROTOCOL:TCP,BW:100.5,LAT:20.1")
 parseBenchmarkLog : Str -> Result BenchmarkResult [InvalidFormat]

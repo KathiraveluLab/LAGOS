@@ -44,3 +44,5 @@ _bmad
 .elixir_ls/
 /config/*.secret.exs
 docker_build.log
+
+core/pony/pony
