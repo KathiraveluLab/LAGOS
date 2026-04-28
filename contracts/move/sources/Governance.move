@@ -42,7 +42,7 @@ module lagos::governance {
         transfer::share_object(ledger);
     }
 
-    public entry fun record_accountability(
+    public fun record_accountability(
         ledger: &mut TransactionLedger,
         zk_proof_hash: vector<u8>,
         action: vector<u8>,
@@ -56,12 +56,12 @@ module lagos::governance {
         table::add(&mut ledger.history, zk_proof_hash, record);
     }
 
-    public entry fun register_node(
+    public fun register_node(
         registry: &mut Registry,
         node_id: vector<u8>,
         zk_proof_hash: vector<u8>,
         ctx: &mut TxContext
-    ) {
+    ): NodeIdentity {
         let node = NodeIdentity {
             id: object::new(ctx),
             node_id,
@@ -70,6 +70,6 @@ module lagos::governance {
             zk_proof_hash,
         };
         registry.node_count = registry.node_count + 1;
-        transfer::transfer(node, tx_context::sender(ctx));
+        node
     }
 }
