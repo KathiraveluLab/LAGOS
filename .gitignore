@@ -46,3 +46,5 @@ _bmad
 docker_build.log
 
 core/pony/pony
+logic/roc/benchmark
+logic/roc/monitor
