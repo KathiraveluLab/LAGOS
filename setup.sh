@@ -213,6 +213,18 @@ else
 fi
 persist_path "$HOME/unison"
 
+# 13. NATS Messaging Plane
+if command -v docker &> /dev/null; then
+    if docker ps -a --format '{{.Names}}' | grep -Eq "^lagos-nats\$"; then
+        echo "NATS container 'lagos-nats' already exists. Starting it if not running..."
+        execute "Starting existing NATS container" docker start lagos-nats > /dev/null
+    else
+        execute "Starting new NATS container" docker run -d --name lagos-nats -p 4222:4222 nats:latest > /dev/null
+    fi
+else
+    echo " [WARNING] Docker is not installed. Please install Docker to run the NATS messaging plane automatically."
+fi
+
 echo "--- Final Verification ---"
 for cmd in ponyc gleam sui clarinet nargo scarb roc ucm lurk; do
     if command -v $cmd &> /dev/null; then
