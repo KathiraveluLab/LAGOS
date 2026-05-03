@@ -29,7 +29,7 @@ The following sequence describes how a single network governance event (e.g., a 
 ### Phase 5: Auditing & Accountability (Noir, Cairo, & Lurk)
 **Goal**: Private, verifiable proof of correct execution.
 - **Action**: Finally, **Noir** and **Cairo** generate a STARK-provable proof of the authorized transition. **Lurk** performs a recursive audit to verify that the entire chain of governance across different administrative domains remains compliant with global laws.
-- **Usage**: `cd proofs/noir && nargo check && nargo prove`
+- **Usage**: `cd proofs/noir && nargo check && nargo execute`
 
 ---
 
@@ -41,7 +41,7 @@ The following sequence describes how a single network governance event (e.g., a 
 | **Routing Core** | Pony | `ponyc` | `ponyc . && ./pony` |
 | **Governance** | Move | `sui move` | `sui move test` |
 | **Policy** | Clarity | `clarinet` | `clarinet check` |
-| **ZK-Audit** | Noir | `nargo` | `nargo check` |
+| **ZK-Audit** | Noir | `nargo` | `nargo check && nargo execute` |
 | **Arithmetic Proofs** | Cairo | `scarb` | `scarb build` |
 | **Optimization** | Roc | `roc` | `roc run <file>` |
 | **Functions** | Unison | `ucm` | `ucm` |
