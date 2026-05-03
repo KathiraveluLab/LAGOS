@@ -70,7 +70,6 @@ LAGOS represents a unique integration of nine specialized programming languages:
 - `logic/`: Optimization algorithms and MPTCP logic (Roc).
 - `fns/`: Content-addressed function primitives (Unison).
 - `deploy/`: MPTCP testbed and orchestration scripts.
-- `_paper/`: LaTeX source for the research manuscript.
 
 ## Getting Started
 
@@ -89,6 +88,8 @@ chmod +x setup.sh
 
 After the script completes, restart your terminal or source your shell profile (e.g., `source ~/.bashrc`) to update your environment variables.
 
+For a detailed breakdown of all 13 installation steps and background services configured by this script, see the **[Setup Guide](setup.md)**.
+
 
 ### Manual Prerequisites
 
@@ -103,3 +104,13 @@ After the script completes, restart your terminal or source your shell profile (
 For a detailed end-to-end explanation of the LAGOS workflow and specific command-line instructions for all nine toolchains, please refer to the:
 
 👉 **[LAGOS USER GUIDE](USER-GUIDE.md)**
+
+### End-to-End Simulation
+
+To see all 5 phases of the LAGOS architecture working together automatically (from orchestration to zero-knowledge auditing), you can run the provided execution script:
+
+```bash
+./run.sh
+```
+
+This script will sequentially execute the Gleam, Pony, Roc, Move, and Noir components, displaying the output of each phase to demonstrate the complete lifecycle of a network event.

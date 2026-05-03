@@ -24,7 +24,7 @@ pub fn main() {
     sup.new(sup.OneForOne)
     |> sup.start
     
-  process.sleep_forever()
+  process.sleep(1000)
 }
 
 
