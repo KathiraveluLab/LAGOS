@@ -24,7 +24,7 @@ The following sequence describes how a single network governance event (e.g., a 
 ### Phase 4: Governance Enforcement (Move & Clarity)
 **Goal**: Decidable policy enforcement and resource safety.
 - **Action**: The routing change is submitted to the governance layer. **Move** ensures that network resources (e.g., bandwidth credits) are safely "transferred" without duplication, while **Clarity** verifies the change against a non-Turing complete (decidable) policy set.
-- **Usage**: `cd contracts/move && sui move build`
+- **Usage**: `cd contracts/move && sui move test`
 
 ### Phase 5: Auditing & Accountability (Noir, Cairo, & Lurk)
 **Goal**: Private, verifiable proof of correct execution.
@@ -39,7 +39,7 @@ The following sequence describes how a single network governance event (e.g., a 
 | :--- | :--- | :--- | :--- |
 | **Orchestration** | Gleam | `gleam` | `gleam run` |
 | **Routing Core** | Pony | `ponyc` | `ponyc . && ./pony` |
-| **Governance** | Move | `sui move` | `sui move build` |
+| **Governance** | Move | `sui move` | `sui move test` |
 | **Policy** | Clarity | `clarinet` | `clarinet check` |
 | **ZK-Audit** | Noir | `nargo` | `nargo check` |
 | **Arithmetic Proofs** | Cairo | `scarb` | `scarb build` |

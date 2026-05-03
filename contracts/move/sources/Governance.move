@@ -1,9 +1,7 @@
 module lagos::governance {
-    use sui::object::{Self, UID};
-    use sui::tx_context::{Self, TxContext};
-    use sui::transfer;
+    use sui::table::{Self, Table};
 
-    struct NodeIdentity has key, store {
+    public struct NodeIdentity has key, store {
         id: UID,
         node_id: vector<u8>,
         owner: address,
@@ -11,19 +9,18 @@ module lagos::governance {
         zk_proof_hash: vector<u8>, // Cryptographic link to Noir proofs
     }
 
-    struct Registry has key {
+    public struct Registry has key {
         id: UID,
         node_count: u64,
     }
 
-    use sui::table::{Self, Table};
 
-    struct TransactionLedger has key {
+    public struct TransactionLedger has key {
         id: UID,
         history: Table<vector<u8>, Accountability>,
     }
 
-    struct Accountability has store {
+    public struct Accountability has store {
         zk_proof_hash: vector<u8>,
         timestamp: u64,
         action: vector<u8>,
@@ -71,5 +68,30 @@ module lagos::governance {
         };
         registry.node_count = registry.node_count + 1;
         node
+    }
+
+    // --- Public Accessors ---
+
+    public fun node_count(registry: &Registry): u64 {
+        registry.node_count
+    }
+
+    public fun node_reputation(node: &NodeIdentity): u64 {
+        node.reputation
+    }
+
+    public fun node_owner(node: &NodeIdentity): address {
+        node.owner
+    }
+
+    public fun ledger_contains(ledger: &TransactionLedger, zk_proof_hash: vector<u8>): bool {
+        table::contains(&ledger.history, zk_proof_hash)
+    }
+
+    // --- Test Helpers ---
+
+    #[test_only]
+    public fun init_for_testing(ctx: &mut TxContext) {
+        init(ctx)
     }
 }

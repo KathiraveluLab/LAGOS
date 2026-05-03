@@ -131,6 +131,13 @@ else
 fi
 persist_path "$HOME/.suiup/bin"
 
+# Build Move contracts to verify Sui toolchain
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if command -v sui &> /dev/null && [ -d "$SCRIPT_DIR/contracts/move" ]; then
+    execute "Building Move governance contracts" \
+        sh -c "cd $SCRIPT_DIR/contracts/move && sui move build"
+fi
+
 # 7. Clarinet (Clarity)
 if ! command -v clarinet &> /dev/null; then
     execute "Installing Clarinet (binary)" \

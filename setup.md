@@ -22,7 +22,7 @@ Installs `ponyup`, the official toolchain multiplexer for the Pony language. The
 Downloads a pre-compiled musl-based release of the Gleam compiler (v1.15.4) from its official GitHub repository, extracting and placing it in your `~/.local/bin` directory.
 
 ### 6. Sui CLI (Move)
-Installs the Sui CLI using the `suiup` installer. This provides the environment required for developing, building, and deploying Move smart contracts on the Sui network.
+Installs the Sui CLI using the `suiup` installer. After installation, the script also runs `sui move build` against the `contracts/move` directory to verify the toolchain is working correctly and to pre-compile the LAGOS governance contracts.
 
 ### 7. Clarinet (Clarity)
 Downloads the pre-compiled binary release of Clarinet. Clarinet is a dedicated local development environment and testing harness for Clarity smart contracts.
