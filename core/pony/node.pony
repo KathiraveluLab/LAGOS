@@ -44,7 +44,11 @@ actor OverlayNode
     end
 
   be receive_p2p(sender_id: String, data: String) =>
-    _env.out.print("Received P2P packet from " + sender_id + " at " + _id + ": " + data)
+    if data.contains("ECG_telemetry:") then
+      _env.out.print("Received patient-led federated health telemetry packet from " + sender_id + " at " + _id + ": " + data)
+    else
+      _env.out.print("Received P2P packet from " + sender_id + " at " + _id + ": " + data)
+    end
 
   be gossip(known_nodes: Array[String] val) =>
     """

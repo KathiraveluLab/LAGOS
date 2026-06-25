@@ -10,4 +10,4 @@ actor Main
     node3.add_neighbor("node1", node1)
 
     node1.gossip(recover val ["node1"; "node2"; "node3"] end)
-    node1.route_p2p("node3", "Hello from Node 1")
+    node1.route_p2p("node3", "ECG_telemetry:{\"patient_id\":\"p984\",\"bpm\":72,\"ecg_mv\":[0.15,0.22,0.18],\"timestamp\":1700000000}")
