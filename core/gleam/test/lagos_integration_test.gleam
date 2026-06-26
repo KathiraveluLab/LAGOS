@@ -65,7 +65,7 @@ pub fn scenario_4_patient_health_telemetry_test() {
   let is_latency_critical = latency <. 20.0
   is_latency_critical |> should.equal(True)
 
-  let compliance_zk_proof = "0xecg7777"
+  let compliance_zk_proof = "0xecab7777"
   
   write_log(
     "Patient Health Telemetry", 
