@@ -13,11 +13,11 @@ fi
 
 # 2. Run TCP Benchmark
 echo "Running Standard TCP Benchmark..."
-docker exec lagos-mptcp-client iperf3 -c lagos-mptcp-server -J > tcp_results.json
+docker exec anchorage-gateway iperf3 -c pula-gateway -J > tcp_results.json
 
 # 3. Run MPTCP Benchmark
 echo "Running MPTCP Benchmark (via mptcpize)..."
-docker exec lagos-mptcp-client mptcpize iperf3 -c lagos-mptcp-server -J > mptcp_results.json
+docker exec anchorage-gateway mptcpize iperf3 -c pula-gateway -J > mptcp_results.json
 
 # 4. Pipe results to Roc Analyzer
 if [ -f "logic/roc/benchmark.roc" ]; then

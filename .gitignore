@@ -52,3 +52,8 @@ logic/roc/monitor
 # Noir Proof Inputs
 Prover.toml
 Verifier.toml
+
+# Benchmark Results
+*_results.json
+tcp_results.json
+mptcp_results.json
