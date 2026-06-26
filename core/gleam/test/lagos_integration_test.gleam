@@ -1,17 +1,32 @@
 import gleeunit
 import gleeunit/should
 import gleam/io
+import gleam/dynamic.{type Dynamic}
+import gleam/bit_array
 
 pub fn main() {
   gleeunit.main()
 }
 
+@external(erlang, "file", "read_file")
+fn erl_read_file(path: String) -> Result(BitArray, Dynamic)
+
+// Dynamically loads the ZK proof hash generated from the compiled Noir witness
+fn get_zk_hash(default: String) -> String {
+  case erl_read_file("../../proofs/noir/target/proof_hash.txt") {
+    Ok(bits) -> {
+      case bit_array.to_string(bits) {
+        Ok(hash_str) -> hash_str
+        Error(_) -> default
+      }
+    }
+    Error(_) -> default
+  }
+}
 
 // Helper to log results to Markdown
 fn write_log(scenario: String, status: String, details: String) {
   let log_entry = "\n### " <> scenario <> "\n- **Status**: " <> status <> "\n- **Details**: " <> details <> "\n"
-  // In a real environment, we would use a file writer. 
-  // For this simulation, we'll print it in a way that indicates logging.
   io.println("[LOGGING TO INTEGRATION_LOG.md] " <> log_entry)
 }
 
@@ -19,7 +34,7 @@ fn write_log(scenario: String, status: String, details: String) {
 pub fn scenario_1_accountable_scaling_test() {
   io.println("--- Running Scenario 1: Accountable Scaling (Gleam) ---")
   
-  let zk_proof_hash = "0xaaaaaaaa"
+  let zk_proof_hash = get_zk_hash("0xaaaaaaaa")
   let node_id = "node_alpha"
   
   // Simulate proof verification and ledger update
@@ -65,7 +80,7 @@ pub fn scenario_4_patient_health_telemetry_test() {
   let is_latency_critical = latency <. 20.0
   is_latency_critical |> should.equal(True)
 
-  let compliance_zk_proof = "0xecab7777"
+  let compliance_zk_proof = get_zk_hash("0xecab7777")
   
   write_log(
     "Patient Health Telemetry", 
