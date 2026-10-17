@@ -188,4 +188,71 @@ module lagos::governance_test {
 
         test_scenario::end(scenario);
     }
+
+    #[test]
+    /// Test recording accountability for high-frequency trading arbitrage and real-time gaming state synchronization.
+    fun test_record_financial_and_gaming_accountability() {
+        let mut scenario = test_scenario::begin(ADMIN);
+
+        {
+            governance::init_for_testing(test_scenario::ctx(&mut scenario));
+        };
+
+        test_scenario::next_tx(&mut scenario, ADMIN);
+        {
+            let mut ledger = test_scenario::take_shared<governance::TransactionLedger>(&scenario);
+
+            // 1. HFT cross-market arbitrage solvency and slippage compliance
+            governance::record_accountability(
+                &mut ledger,
+                b"hft_hash_solvency_proof_0x8f7a",
+                b"HFT_ARBITRAGE_SOLVENCY",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"hft_hash_solvency_proof_0x8f7a"), 0);
+
+            // 2. Real-time distributed gaming fog-of-war anti-cheat tick proof
+            governance::record_accountability(
+                &mut ledger,
+                b"gaming_hash_anti_cheat_0x9c33",
+                b"GAMING_TICK_ANTI_CHEAT",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"gaming_hash_anti_cheat_0x9c33"), 1);
+
+            test_scenario::return_shared(ledger);
+        };
+
+        test_scenario::end(scenario);
+    }
+
+    #[test]
+    /// Test recording accountability for Lurk recursive historical audit proof.
+    fun test_record_lurk_recursive_audit() {
+        let mut scenario = test_scenario::begin(ADMIN);
+
+        {
+            governance::init_for_testing(test_scenario::ctx(&mut scenario));
+        };
+
+        test_scenario::next_tx(&mut scenario, ADMIN);
+        {
+            let mut ledger = test_scenario::take_shared<governance::TransactionLedger>(&scenario);
+
+            // Record Lurk recursive SNARK state commitment
+            governance::record_accountability(
+                &mut ledger,
+                b"lurk_hash_recursive_epoch_chain_all_compliant",
+                b"LURK_RECURSIVE_AUDIT",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"lurk_hash_recursive_epoch_chain_all_compliant"), 0);
+
+            test_scenario::return_shared(ledger);
+        };
+
+        test_scenario::end(scenario);
+    }
 }
+
+

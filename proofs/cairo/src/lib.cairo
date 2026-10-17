@@ -34,4 +34,19 @@ mod tests {
         assert(pmu_latency == 20, 'PMU latency mismatch');
         assert(verify_latency_bound(pmu_latency, 50), 'PMU window exceeded');
     }
+
+    #[test]
+    fn test_hft_submillisecond_arbitrage_bound() {
+        let hft_latency = aggregate_latency(2, 1, 2, 3);
+        assert(hft_latency == 2, 'HFT latency mismatch');
+        assert(verify_latency_bound(hft_latency, 5), 'HFT SLA exceeded');
+    }
+
+    #[test]
+    fn test_realtime_gaming_tick_rate_bound() {
+        let tick_latency = aggregate_latency(12, 14, 15, 11);
+        assert(tick_latency == 13, 'Gaming tick mismatch');
+        assert(verify_latency_bound(tick_latency, 16), '60Hz tick bound failed');
+    }
 }
+

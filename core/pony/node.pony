@@ -52,6 +52,10 @@ actor OverlayNode
       _env.out.print("Received C-ITS vehicular telemetry packet from " + sender_id + " at " + _id + ": " + data)
     elseif data.contains("DigitalTwin_telemetry:") then
       _env.out.print("Received industrial digital twin telemetry packet from " + sender_id + " at " + _id + ": " + data)
+    elseif data.contains("HFT_order_telemetry:") then
+      _env.out.print("Received high-frequency trading order telemetry packet from " + sender_id + " at " + _id + ": " + data)
+    elseif data.contains("Gaming_state_telemetry:") then
+      _env.out.print("Received real-time gaming state telemetry packet from " + sender_id + " at " + _id + ": " + data)
     else
       _env.out.print("Received P2P packet from " + sender_id + " at " + _id + ": " + data)
     end

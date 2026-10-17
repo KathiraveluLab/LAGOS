@@ -63,6 +63,10 @@ echo -e "${YELLOW}>> Validating Cairo arithmetic proofs...${NC}"
 cd "$SCRIPT_DIR/proofs/cairo"
 scarb test
 echo -e "${GREEN}[cairo] Arithmetic proof checks passed!${NC}"
+echo -e "${YELLOW}>> Executing Lurk recursive IVC verification and Move bridge...${NC}"
+cd "$SCRIPT_DIR"
+./proofs/lurk/bridge_lurk_to_move.sh
+echo -e "${GREEN}[lurk] Recursive audit bridge validated!${NC}"
 echo ""
 
 echo -e "${CYAN}==================================================${NC}"
