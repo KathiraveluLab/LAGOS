@@ -46,6 +46,12 @@ actor OverlayNode
   be receive_p2p(sender_id: String, data: String) =>
     if data.contains("ECG_telemetry:") then
       _env.out.print("Received patient-led federated health telemetry packet from " + sender_id + " at " + _id + ": " + data)
+    elseif data.contains("PMU_synchrophasor:") then
+      _env.out.print("Received smart grid synchrophasor packet from " + sender_id + " at " + _id + ": " + data)
+    elseif data.contains("C_ITS_telemetry:") then
+      _env.out.print("Received C-ITS vehicular telemetry packet from " + sender_id + " at " + _id + ": " + data)
+    elseif data.contains("DigitalTwin_telemetry:") then
+      _env.out.print("Received industrial digital twin telemetry packet from " + sender_id + " at " + _id + ": " + data)
     else
       _env.out.print("Received P2P packet from " + sender_id + " at " + _id + ": " + data)
     end

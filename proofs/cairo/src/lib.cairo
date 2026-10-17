@@ -27,4 +27,11 @@ mod tests {
         assert(avg == 144, 'Calculation error');
         assert(verify_latency_bound(avg, 150), 'Threshold bound failed');
     }
+
+    #[test]
+    fn test_smart_grid_synchrophasor_latency() {
+        let pmu_latency = aggregate_latency(18, 22, 19, 21);
+        assert(pmu_latency == 20, 'PMU latency mismatch');
+        assert(verify_latency_bound(pmu_latency, 50), 'PMU window exceeded');
+    }
 }

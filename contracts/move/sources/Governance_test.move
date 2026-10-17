@@ -142,4 +142,50 @@ module lagos::governance_test {
 
         test_scenario::end(scenario);
     }
+
+    #[test]
+    /// Test recording accountability for smart grid, C-ITS, and industrial digital twin streams.
+    fun test_record_cyber_physical_accountability() {
+        let mut scenario = test_scenario::begin(ADMIN);
+
+        {
+            governance::init_for_testing(test_scenario::ctx(&mut scenario));
+        };
+
+        test_scenario::next_tx(&mut scenario, ADMIN);
+        {
+            let mut ledger = test_scenario::take_shared<governance::TransactionLedger>(&scenario);
+
+            // 1. Smart Grid PMU synchrophasor compliance
+            governance::record_accountability(
+                &mut ledger,
+                b"pmu_hash_freq_stable_60hz",
+                b"PMU_SYNCHROPHASOR",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"pmu_hash_freq_stable_60hz"), 1);
+
+            // 2. C-ITS vehicular speed and emission compliance
+            governance::record_accountability(
+                &mut ledger,
+                b"cits_hash_vel_privacy_proof",
+                b"C_ITS_MOBILITY",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"cits_hash_vel_privacy_proof"), 2);
+
+            // 3. Industrial digital twin vibrational tolerance
+            governance::record_accountability(
+                &mut ledger,
+                b"dtwin_hash_cnc_tolerance",
+                b"DIGITAL_TWIN",
+                test_scenario::ctx(&mut scenario),
+            );
+            assert!(governance::ledger_contains(&ledger, b"dtwin_hash_cnc_tolerance"), 3);
+
+            test_scenario::return_shared(ledger);
+        };
+
+        test_scenario::end(scenario);
+    }
 }
