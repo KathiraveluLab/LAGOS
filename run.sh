@@ -55,10 +55,14 @@ cd "$SCRIPT_DIR/contracts/move"
 sui move test
 echo ""
 
-# Phase 5: Auditing & Accountability (Noir & Lurk)
-echo -e "${GREEN}[Phase 5] Auditing & Accountability (Noir & Lurk)${NC}"
+# Phase 5: Auditing & Accountability (Noir, Cairo, & Lurk)
+echo -e "${GREEN}[Phase 5] Auditing & Accountability (Noir, Cairo, & Lurk)${NC}"
 echo -e "${YELLOW}>> Verifying generated ZK witness with hash 0x$PROOF_HASH...${NC}"
 echo -e "${GREEN}[lagos_accountability] Proof verification succeeded!${NC}"
+echo -e "${YELLOW}>> Validating Cairo arithmetic proofs...${NC}"
+cd "$SCRIPT_DIR/proofs/cairo"
+scarb test
+echo -e "${GREEN}[cairo] Arithmetic proof checks passed!${NC}"
 echo ""
 
 echo -e "${CYAN}==================================================${NC}"
